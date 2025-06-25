@@ -1,0 +1,14 @@
+apod.jpg
+old_files/
+images/
+public/app_old.js
+public/archive/
+scripts/
+dokumenter/
+
+node_modules/
+.env
+.DS_Store
+*.log
+npm-debug.log*
+dist/

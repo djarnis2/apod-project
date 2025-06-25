@@ -1,0 +1,13 @@
+{
+  "name": "apod",
+  "version": "1.0.0",
+  "description": "space_image Shell script henter dagens billede og gemmer som apod.jpg\r old_space python script henter dagens billede og gemmer under dagens dato i image folder\r space python scrip udfører begge opgaver\r set-wallpaper ps1 powershell scrip sætter apod.jpg som screensaver",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

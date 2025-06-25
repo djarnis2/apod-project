@@ -1,0 +1,125 @@
+body {
+    color: white;
+    background-color: black;
+    font-family: Inter, sans-serif;
+    font-size: large;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.page-header {
+    text-align: center;
+    color: #FFD700;
+    background-color: black;
+    padding: 20px 0;
+}
+
+.main-container {
+    display: flex;
+    height: calc(100vh - 140px); /* Full height minus header */
+}
+
+.left-container {
+    flex: 3; /* Use most of the space for the media */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 10px 10px 10px; /* Add padding on the bottom and left */
+    box-sizing: border-box; /* Ensure padding is included in the dimensions */
+    overflow: hidden;
+}
+
+.image-panel {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* position: relative; */
+}
+
+.left-container img,
+.left-container iframe {
+    width: calc(100% - 20px); /* Adjust for padding */
+    height: calc(100% - 10px); /* Adjust for left padding */
+    object-fit: contain; /* Ensures proper scaling */
+    border: none;
+    padding-left: 20px;
+}
+
+.right-container {
+    flex: 1;
+    min-width: 300px;
+    padding: 20px;
+    overflow-y: auto;
+}
+nav {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+nav button {
+    padding: 8px 16px;
+    background-color: #FFD700;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+.invisible {
+    visibility: hidden; /* Makes the button invisible but keeps its space */
+}
+
+.description-panel {
+    margin-top: 20px;
+}
+
+/* Pop-up vindue */
+/* Modal styling */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.9);
+}
+
+/* Modal image */
+.modal-content {
+    margin: auto;
+    display: block;
+    width: auto;
+    height: auto;
+    border: 3px solid white;
+    border-radius: 10px;
+}
+
+/* Close button */
+.close {
+    position: absolute;
+    top: 20px;
+    right: 35px;
+    color: white;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.close:hover,
+.close:focus {
+    color: #bbb;
+    text-decoration: none;
+    cursor: pointer;
+}
