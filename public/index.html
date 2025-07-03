@@ -70,6 +70,7 @@
         }
 
         function updateContent(data) {
+
             const imageElement = document.getElementById('apodImage');
             const linkElement = document.getElementById('link');
             const descriptionElement = document.getElementById('apodDescription');
@@ -77,6 +78,7 @@
 
             // Prioritize hdurl over url
             const imageUrl = data.hdurl || data.url;
+            console.log("This")
             console.log(imageUrl);
             const imageTitle = data.title;
             daysTitle.innerText = imageTitle;
@@ -113,7 +115,10 @@
                 linkElement.style.display = 'none';
                 iframe.style.display = 'none';
 
-                imageElement.src = imageUrl;
+                const extension = (data.hdurl || data.url).split('.').pop().split('?')[0];
+                const imageUrlLocal = `/archive/images/${data.date}.${extension}`
+
+                imageElement.src = imageUrlLocal;
                 console.log(imageElement.src);
 
             } else if (imageUrl.includes('youtube.com') || imageUrl.includes('youtu.be')) {
@@ -183,6 +188,8 @@
         }
 
         function fetchAndDisplay() {
+            fetch('/todays-apod');
+            
             if (dates.length > 0 && dates[currentIndex]) {
                 const date = dates[currentIndex];
                 fetch(`/get-json/${date}`)
@@ -220,6 +227,8 @@
                 fetchAndDisplay();
             }
         });
+
+
 
         // Fetch all dates on initial load
         fetchDates();
