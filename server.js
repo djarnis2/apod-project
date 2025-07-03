@@ -1,6 +1,11 @@
-const express = require('express');
-const fs = require('fs');
-const path = require('path');
+import express from 'express';
+import fs from 'fs';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
 const app = express();
 const port = 3000;
 
@@ -14,7 +19,7 @@ app.use((req, res, next) => {
 });
 // Endpoint to list dates from the archive folder
 app.get('/dates', (req, res) => {
-    const archivePath = path.join(__dirname, 'public', 'archive');
+    const archivePath = path.join(__dirname, 'public', 'archive', 'json');
     fs.readdir(archivePath, (err, files) => {
         if (err) {
             console.error('Error finding files: ', err);
@@ -29,7 +34,7 @@ app.get('/dates', (req, res) => {
 
 // Endpoint to get JSON data by date
 app.get('/get-json/:date', (req, res) => {
-    const filePath = path.join(__dirname, 'public', 'archive', `${req.params.date}.json`);
+    const filePath = path.join(__dirname, 'public', 'archive', 'json', `${req.params.date}.json`);
     res.sendFile(filePath, (err) => {
         if (err) {
             console.error(`Failed to send file ${filePath}: ${err}`);
