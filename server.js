@@ -1,7 +1,13 @@
+import { config } from 'dotenv';
+config();
+
 import express from 'express';
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import fetch from 'node-fetch';
+
+
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -92,8 +98,9 @@ app.get('/todays-apod', async (req, res) => {
             const buffer = await imageRes.buffer();
             fs.writeFileSync(imagePath, buffer)
         } 
-
-        res.send(`✅ APOD image ${date} updated`);
+        
+        console.log('SERVER: data fra NASA:', data);   // se i terminal
+        return res.send(`✅ APOD image ${date} updated`);
     
     } catch (err) {
         console.error(err);

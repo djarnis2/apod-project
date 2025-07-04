@@ -55,6 +55,21 @@
         let dates = [];
         let currentIndex = 0;
 
+        async function init() {
+            console.log('🔵 init startet');
+
+            try {
+                const updateRes = await fetch('/todays-apod');
+                const updateText = await updateRes.text()
+                console.log(updateText)
+            }
+            catch {
+                console.error("Failed to load toadys image")
+            }
+             // Fetch all dates on initial load
+            fetchDates();
+        }
+
         function fetchDates() {
 
             console.log("fetchDates called")
@@ -188,8 +203,7 @@
         }
 
         function fetchAndDisplay() {
-            fetch('/todays-apod');
-            
+
             if (dates.length > 0 && dates[currentIndex]) {
                 const date = dates[currentIndex];
                 fetch(`/get-json/${date}`)
@@ -230,8 +244,7 @@
 
 
 
-        // Fetch all dates on initial load
-        fetchDates();
+       
 
         // Pop-up vindue
 
@@ -251,6 +264,8 @@
             modal.style.display = 'none';
         });
 
+
+        init();
         
 
 
