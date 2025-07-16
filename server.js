@@ -55,6 +55,13 @@ app.get('/get-json/:date', (req, res) => {
     });
 });
 
+app.post('/shutdown', (req, res) => {
+    res.send("Shutting down...");
+    server.close(() => {
+        console.log("Shutting down Express server.")
+    });
+});
+
 // Endpoint to get today apod from NASA
 app.get('/todays-apod', async (req, res) => {
     // close connection after response

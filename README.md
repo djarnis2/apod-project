@@ -6,11 +6,5 @@ Use 'npm start' to run app
 Example on a script to automate:
 
 @echo off
-cd <your project folder>
-call npm start
-echo opening browser...
-timeout /t 3
-start http://localhost:3000
-
-
-Link to NASA's apod github with documentation: https://github.com/nasa/apod-api
+cd C:\Projects\APOD
+start cmd /k "npm start"

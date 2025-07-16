@@ -282,6 +282,10 @@
             modal.style.display = 'none';
         });
 
+        window.addEventListener('unload', () => {
+            navigator.sendBeacon('/shutdown');
+        });
+
 
         init();
         
