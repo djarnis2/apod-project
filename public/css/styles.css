@@ -41,6 +41,13 @@ body {
     /* position: relative; */
 }
 
+.apod-loader {
+    position:absolute;
+    top: 40%;
+    left:40%;
+    
+}
+
 .left-container img,
 .left-container iframe {
     width: calc(100% - 20px); /* Adjust for padding */

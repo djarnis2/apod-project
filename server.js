@@ -6,6 +6,7 @@ import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import fetch from 'node-fetch';
+import open from 'open';
 
 
 
@@ -14,6 +15,11 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const port = 3000;
+
+const server = app.listen(port, () => {
+    console.log(`Server listening at http://localhost:${port}`);
+    open(`http://localhost:${port}`)
+});
 
 // Serve static files from the 'public' directory
 app.use(express.static('public'));
@@ -51,6 +57,9 @@ app.get('/get-json/:date', (req, res) => {
 
 // Endpoint to get today apod from NASA
 app.get('/todays-apod', async (req, res) => {
+    // close connection after response
+    res.set('Connection', 'close');
+    
     const apiKey = process.env.API_KEY;
     const filepath = `https://api.nasa.gov/planetary/apod?api_key=${apiKey}`;
 
@@ -59,7 +68,7 @@ app.get('/todays-apod', async (req, res) => {
         if (!respons.ok) {
             throw new Error(`API-call failed: ${respons.status}`)
         }
-
+        
         const data = await respons.json();
 
         // Save data
@@ -78,29 +87,46 @@ app.get('/todays-apod', async (req, res) => {
         // Save it 
         fs.writeFileSync(jsonPath, JSON.stringify(data, null, 2));
 
+        let statusVar, imageUrl, extension, imagePath;
+
         if (data.media_type === 'image') {
             // Prioritice hd over normal
-            const imageUrl = data.hdurl || data.url;
+            imageUrl = data.hdurl || data.url;
             // Find the extension, remove a eventual query
-            const extension = imageUrl.split('.').pop().split('?')[0];
+            extension = imageUrl.split('.').pop().split('?')[0];
             // Construct filename with date plus extension
-            const imagePath = path.join(imageDir, `${date}.${extension}`);
+            imagePath = path.join(imageDir, `${date}.${extension}`);
+            
 
             if (fs.existsSync(imagePath)) {
-                return res.send(`✅ APOD image ${date} already exist.`)
-            }
+                statusVar = 'cached';
+            } else {
+                statusVar = 'downloaded';
+                // Fetch image
+                const imageRes = await fetch(imageUrl);
+                if (!imageRes.ok) throw new Error('Failed to fetch image');
 
-            // Fetch image
-            const imageRes = await fetch(imageUrl);
-            if (!imageRes.ok) throw new Error('Failed to fetch image');
-
-            // Save image
-            const buffer = await imageRes.buffer();
-            fs.writeFileSync(imagePath, buffer)
-        } 
+                // Save image
+                const buffer = await imageRes.buffer();
+                fs.writeFileSync(imagePath, buffer);
         
-        console.log('SERVER: data fra NASA:', data);   // se i terminal
-        return res.send(`✅ APOD image ${date} updated`);
+                console.log('SERVER: data from NASA:', data);   // printed in terminal
+            }
+        } else {
+                statusVar = 'video';
+        }
+
+        const payload = {
+            status: statusVar,
+            date,
+            ...(statusVar === 'cached' || statusVar === 'downloaded' 
+                ? { imagePath: `/archive/images/${date}.${extension}` } 
+                : { url: data.url }
+            )
+        };
+        
+        // sending
+        res.json(payload);
     
     } catch (err) {
         console.error(err);
@@ -109,8 +135,3 @@ app.get('/todays-apod', async (req, res) => {
 
 })
 
-
-
-app.listen(port, () => {
-    console.log(`Server listening at http://localhost:${port}`);
-});

@@ -18,18 +18,21 @@
     <header class="page-header">
         <h1 id="daysTitle">This is the Astronomy Picture Of the Day</h1>
     </header>
+
     <div class="main-container">
         <div class="left-container">
 
 
+
             <div class="image-panel">
+                <div class="apod-loader" id="apod-loader" style="display:none"></div>
                 <!-- <div class="left-side-panel"></div> -->
                 <!-- Dynamic image updated from JSON data -->
                 <img id="apodImage" src="" alt="APOD Image" style="width:80%">
                 <a id="link" href="" style="display: none;"></a>
                 <!-- <div class="right-side-panel"></div> -->
             </div>
-
+    
         </div>
         <div class="right-container">
             <nav>
@@ -58,21 +61,37 @@
         async function init() {
             console.log('🔵 init startet');
 
+            const loader = document.getElementById('apod-loader');
+            loader.textContent = "🔄 Connecting to NASA...";
+            loader.style.display = 'block';
+
             try {
                 const updateRes = await fetch('/todays-apod');
-                const updateText = await updateRes.text()
-                console.log(updateText)
+                const updateData = await updateRes.json();
+                if (updateData.status === 'downloaded') {
+                    loader.textContent = "📥 Fetching and saving the image...";
+                } else if (updateData.status === 'cached') {
+                    loader.style.display = 'none'
+                } else if (updateData.status === 'video') {
+                    loader.style.display = 'none'
+                }
             }
             catch {
                 console.error("Failed to load toadys image")
             }
              // Fetch all dates on initial load
-            fetchDates();
+             finally {
+                setTimeout(() => {
+                    loader.style.display = 'none';
+                    fetchDates();
+
+                }, 1000);
+             }
         }
 
         function fetchDates() {
 
-            console.log("fetchDates called")
+            console.log("fetchDates called");
             fetch('/dates')
                 .then(response => response.json())
                 .then(data => {
@@ -93,8 +112,7 @@
 
             // Prioritize hdurl over url
             const imageUrl = data.hdurl || data.url;
-            console.log("This")
-            console.log(imageUrl);
+            console.log("Url to image at Nasa: " + imageUrl);
             const imageTitle = data.title;
             daysTitle.innerText = imageTitle;
             const descriptionHeader = document.getElementById('description-header');
@@ -131,10 +149,10 @@
                 iframe.style.display = 'none';
 
                 const extension = (data.hdurl || data.url).split('.').pop().split('?')[0];
-                const imageUrlLocal = `/archive/images/${data.date}.${extension}`
+                const imageUrlLocal = `/archive/images/${data.date}.${extension}`;
 
                 imageElement.src = imageUrlLocal;
-                console.log(imageElement.src);
+                console.log("Local path to image: " + imageElement.src);
 
             } else if (imageUrl.includes('youtube.com') || imageUrl.includes('youtu.be')) {
                 imageElement.style.display = 'none';

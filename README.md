@@ -11,3 +11,6 @@ call npm start
 echo opening browser...
 timeout /t 3
 start http://localhost:3000
+
+
+Link to NASA's apod github with documentation: https://github.com/nasa/apod-api
