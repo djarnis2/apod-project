@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/styles.css">
+
+    <title>Search Results</title>
+    <!-- Preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <!-- Google fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <header class="page-header">
+        <div class="header-inner">
+            <a href="/" class="logo-link">
+                <img src="/assets/apod-logo.webp" alt="APOD logo" class="logo">
+            </a>
+            <h1 id="daysTitle">Search Results</h1>
+            <div class="search-wrapper">
+                <input type="search" placeholder="Search" id="searchField" />
+                <button id="searchBtn">Submit</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="apod-cards" id="apod-cards"></div>
+
+    <!-- Pop-up vindue -->
+    <div id="imageModal" class="modal">
+        <img class="modal-content" id="modalImage">
+        <p>Some Text</p>
+    </div>
+</body>
+<script src="js/search.js"></script>
+
+</html>
