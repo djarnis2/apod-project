@@ -1,6 +1,9 @@
 window.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);
     const query = params.get('q') || '';
+    const query_as_title = query.charAt(0).toUpperCase() + query.slice(1);
+    const search_page_title = document.getElementById('daysTitle');
+    search_page_title.innerHTML = `Search Results For ${query_as_title}:`
 
     fetch(`/api/search?q=${encodeURIComponent(query)}`)
         .then(res => res.json())
@@ -14,6 +17,8 @@ window.addEventListener('DOMContentLoaded', () => {
 const modal = document.getElementById('imageModal');
 const modalImage = document.getElementById('modalImage');
 const images = document.querySelectorAll('.search-image');
+
+
 
 
 
