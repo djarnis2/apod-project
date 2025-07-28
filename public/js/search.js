@@ -31,6 +31,7 @@ function displayCards(items) {
         card.className = 'card';
 
         if (data.media_type === 'image') {
+            console.log(data.date);
             const ext = (data.hdurl || data.url).split('.').pop().split('?')[0];
             const img = document.createElement('img');
             img.className = 'search-image'
@@ -52,6 +53,14 @@ function displayCards(items) {
             div.style.textAlign = 'center';
             const a = document.createElement('a');
             a.href = data.url;
+            // In case media_type is other the API provides no url 
+            // and a link is created here to nasa.gov instead using the date from the json
+            if (data.media_type === 'other') {
+                const [y, m, d] = data.date.split('-');
+                console.log(y + m + d);
+                const shortYear = y.slice(2);
+                a.href = `https://apod.nasa.gov/apod/ap${shortYear}${m}${d}.html`;
+            }
             a.target = '_blank';
             a.textContent = '🎥';
             a.alt = 'Watch Video';
@@ -67,8 +76,8 @@ function displayCards(items) {
         desc.addEventListener('click', () => {
             expanded = !expanded;
             desc.textContent = expanded
-            ? data.explanation 
-            : data.explanation.slice(0, 100) + '...';
+                ? data.explanation
+                : data.explanation.slice(0, 100) + '...';
         })
         card.appendChild(desc);
 

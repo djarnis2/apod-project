@@ -1,4 +1,9 @@
-body {
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+html body {
+    overflow: hidden;
     color: white;
     background-color: black;
     font-family: Inter, sans-serif;
@@ -7,11 +12,11 @@ body {
     padding: 0;
     display: flex;
     flex-direction: column;
-    height: 100vh;
+    height: 100%;
 }
 
 .page-header {
-    padding: 20px;
+    /* padding: 20px; */
     background-color: black;
     color: #FFD700;
 }
@@ -22,7 +27,7 @@ body {
     align-items: center;
     flex-wrap: wrap;
     max-width: 100%;
-    margin: 1% 5% 1% 5%; /* top right buttom left */
+    margin: 1% 5% 1% 2%; /* top right buttom left */
 }
 
 .header-inner h1 {
@@ -36,6 +41,7 @@ body {
 }
 
 .apod-cards {
+    max-width: 100%;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
     gap: .25rem;
@@ -50,6 +56,7 @@ body {
 }
 
 .card img {
+    max-width: 100%;
     width: 100%;
     height: 150px;
     object-fit: cover;
@@ -61,10 +68,6 @@ body {
     border-radius: 5px;
     height: 150px;
     padding: 0 5px 0 5px;
-}
-
-.card:hover {
-
 }
 
 .hide {
@@ -95,51 +98,31 @@ body {
 }
 
 .main-container {
+    flex: 1;
     display: flex;
-    height: calc(100vh - 140px); /* Full height minus header */
 }
 
 .left-container {
     flex: 3; /* Use most of the space for the media */
     display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 0 10px 10px 10px; /* Add padding on the bottom and left */
-    box-sizing: border-box; /* Ensure padding is included in the dimensions */
     overflow: hidden;
-}
-
-.image-panel {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    /* position: relative; */
 }
 
 .apod-loader {
     position:absolute;
     top: 40%;
-    left:40%;
-    
+    left:40%;  
 }
 
-.left-container img,
-.left-container iframe {
-    width: calc(100% - 20px); /* Adjust for padding */
-    height: calc(100% - 10px); /* Adjust for left padding */
-    object-fit: contain; /* Ensures proper scaling */
-    border: none;
-    padding-left: 20px;
-}
 
 .right-container {
     flex: 1;
     min-width: 300px;
     padding: 20px;
+    padding-right: 5%;
     overflow-y: auto;
 }
+
 nav {
     display: flex;
     justify-content: left;
@@ -208,4 +191,48 @@ nav button {
     color: #bbb;
     text-decoration: none;
     cursor: pointer;
+}
+
+#fallback {
+    /* width: calc(83% - 0px); 
+    height: calc(88% - 50px);  */
+    object-fit: contain; 
+    text-align: center;
+}
+
+#fallback p {
+    font-size: 1.5em;
+}
+
+#nasa-link {
+    color: #FFD700;
+}
+
+
+#video-link a {
+    color: #FFD700;
+}
+
+.image-panel {
+    position: relative;
+    width: 95%;
+    aspect-ratio: 16 / 9;
+    margin: 0 auto;
+    background: #000;
+    border: solid 2px #FFD700;
+    border-radius: 8px;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+
+.image-panel > img,
+.image-panel > iframe,
+.image-panel > video,
+.image-panel > #fallback {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
 }
