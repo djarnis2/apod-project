@@ -93,7 +93,7 @@ function updateContent(data) {
         mediaContainer.appendChild(iframe);
     }
 
-    if (imageUrl && /\.(jpe?g|png)$/i.test(imageUrl)) {
+    if (imageUrl && /\.(jpe?g|png|gif)$/i.test(imageUrl)) {
         // Display the image if the URL points to an image
         imageElement.style.display = 'block';
         linkElement.style.display = 'none';
