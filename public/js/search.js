@@ -1,6 +1,11 @@
+import { fetchAndDisplay } from "./utils.js";
+
 window.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);
     const query = params.get('q') || '';
+    if (query) {
+        localStorage.setItem('lastSearch', query)
+    }
     const query_as_title = query.charAt(0).toUpperCase() + query.slice(1);
     const search_page_title = document.getElementById('daysTitle');
     search_page_title.innerHTML = `Search Results For ${query_as_title}:`
@@ -39,9 +44,11 @@ function displayCards(items) {
             img.src = `/archive/images/${filename}`;
             img.alt = data.title;
             img.style.cursor = 'pointer';
+            img.title = 'Click to enlarge'
 
             // Klik‐event: åbn modal
             img.addEventListener('click', () => {
+                
                 modalImage.src = img.src;
                 modal.style.display = 'flex';
             });
@@ -71,13 +78,11 @@ function displayCards(items) {
         const desc = document.createElement('p');
         desc.textContent = data.explanation.slice(0, 100) + '...';
         desc.style.cursor = 'pointer';
+        desc.title = 'Go To Apod Page'
 
         let expanded = false;
         desc.addEventListener('click', () => {
-            expanded = !expanded;
-            desc.textContent = expanded
-                ? data.explanation
-                : data.explanation.slice(0, 100) + '...';
+            window.location.href = `/day/${data.date}`;
         })
         card.appendChild(desc);
 
@@ -90,6 +95,7 @@ document.getElementById('searchBtn').addEventListener('click', () => {
     if (!query) {
         return;
     }
+    localStorage.setItem('lastSearch', query)
     window.location.href = `/search-results?q=${encodeURIComponent(query)}`;
 });
 

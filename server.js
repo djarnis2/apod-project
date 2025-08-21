@@ -22,8 +22,13 @@ const server = app.listen(port, () => {
     open(`http://localhost:${port}`)
 });
 
+app.get('/day/:date', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+
 // Serve static files from the 'public' directory
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.use((req, res, next) => {
     res.header("Access-Control-Allow-Origin", "*");
@@ -45,6 +50,7 @@ app.get('/dates', (req, res) => {
         }
     });
 });
+
 
 // Endpoint to get JSON data by date
 app.get('/get-json/:date', (req, res) => {
@@ -180,6 +186,7 @@ app.get('/api/search', async (req, res) => {
         res.status(500).send("Server error");
     }
 });
+
 
 app.get('/api/image-list', (req, res) => {
     const imagePath = path.join(__dirname, 'public', 'archive', 'images');
