@@ -15,6 +15,14 @@ html body {
     height: 100%;
 }
 
+html body.index-page {
+    overflow-y: auto;
+}
+
+html body.search-page {
+    overflow:scroll
+}
+
 .page-header {
     /* padding: 20px; */
     background-color: black;
@@ -134,7 +142,7 @@ html body {
 .right-container {
     flex: 1;
     min-width: 300px;
-    padding: 20px;
+    padding: 1.2rem;
     padding-right: 5%;
     overflow-y: auto;
 }
@@ -142,7 +150,7 @@ html body {
 nav {
     display: flex;
     justify-content: left;
-    gap: 50px;
+    gap: 20px;
     margin-bottom: 20px;
 }
 
@@ -156,7 +164,7 @@ nav button {
     font-size: 1em;
 }
 
-#back-to-search {
+#back-to-search, #search-previous, #search-next {
     margin-top: 5%;
     padding: 8px 16px;
     background-color: #FFD700;
@@ -167,12 +175,19 @@ nav button {
     font-size: 1em;
 }
 
+.search-nav {
+    display: flex;
+    gap: 1.2rem;
+    align-items: center;
+}
+
 .invisible {
     visibility: hidden; /* Makes the button invisible but keeps its space */
 }
 
 .description-panel {
     margin-top: 20px;
+    height: 78%;
 }
 
 /* Pop-up vindue */

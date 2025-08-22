@@ -14,7 +14,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;700&display=swap" rel="stylesheet">
 </head>
 
-<body>
+<body class="index-page">
     <header class="page-header">
         <div class="header-inner">
             <a href="/" class="logo-link">
@@ -45,18 +45,20 @@
         </div>
         <div class="right-container">
             <nav>
-                <button id="today">Today</button>
-                <button id="prev">Previous</button>
-                <button id="next" class="invisible">Next</button>
+                <button id="today" title="Today's APOD">Today</button>
+                <button id="prev" title="Previous Stored APOD">Previous</button>
+                <button id="next" title="Next Stored APOD" class="invisible">Next</button>
             </nav>
-            <div id="description-header">This is the description</div>
+            <div id="description-header">Description...</div>
             <div class="description-panel">
                 <div>
                     <p id="apodDescription"></p>
                 </div>
             </div>
-            <div>
-                <button id="back-to-search">🔙 Back To Search</button>
+            <div class="search-nav">
+                <button id="search-previous" hidden><<</button>
+                <button id="back-to-search">🔙</button>
+                <button id="search-next" hidden>>></button>
             </div>
         </div>
     </div>

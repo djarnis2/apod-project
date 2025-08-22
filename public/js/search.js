@@ -1,14 +1,12 @@
-import { fetchAndDisplay } from "./utils.js";
-
 window.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);
     const query = params.get('q') || '';
     if (query) {
-        localStorage.setItem('lastSearch', query)
+        sessionStorage.setItem('lastSearch', query)
     }
     const query_as_title = query.charAt(0).toUpperCase() + query.slice(1);
     const search_page_title = document.getElementById('daysTitle');
-    search_page_title.innerHTML = `Search Results For ${query_as_title}:`
+    search_page_title.innerHTML = `Search: ${query_as_title}:`
 
     fetch(`/api/search?q=${encodeURIComponent(query)}`)
         .then(res => res.json())
@@ -26,17 +24,18 @@ const images = document.querySelectorAll('.search-image');
 
 
 
-
 function displayCards(items) {
     const container = document.getElementById('apod-cards');
     // container.innerHTML = "";
+    const resultDates = items.map(it => it.date);
+    sessionStorage.setItem('resultDates', JSON.stringify(resultDates));
 
-    items.forEach(data => {
+    items.forEach((data, i) => {
         const card = document.createElement('div');
         card.className = 'card';
 
+
         if (data.media_type === 'image') {
-            console.log(data.date);
             const ext = (data.hdurl || data.url).split('.').pop().split('?')[0];
             const img = document.createElement('img');
             img.className = 'search-image'
@@ -44,13 +43,12 @@ function displayCards(items) {
             img.src = `/archive/images/${filename}`;
             img.alt = data.title;
             img.style.cursor = 'pointer';
-            img.title = 'Click to enlarge'
+            img.title = 'Go To Apod Page'
 
-            // Klik‐event: åbn modal
-            img.addEventListener('click', () => {
-                
-                modalImage.src = img.src;
-                modal.style.display = 'flex';
+            // Klik‐event: Go to Apod
+            img.addEventListener('click', () => {  
+                sessionStorage.setItem('resultIndex', String(i))
+                window.location.href = `/day/${data.date}`;
             });
 
             card.appendChild(img);
@@ -82,6 +80,7 @@ function displayCards(items) {
 
         let expanded = false;
         desc.addEventListener('click', () => {
+            sessionStorage.setItem('resultIndex', String(i))
             window.location.href = `/day/${data.date}`;
         })
         card.appendChild(desc);
@@ -95,7 +94,7 @@ document.getElementById('searchBtn').addEventListener('click', () => {
     if (!query) {
         return;
     }
-    localStorage.setItem('lastSearch', query)
+    sessionStorage.setItem('lastSearch', query)
     window.location.href = `/search-results?q=${encodeURIComponent(query)}`;
 });
 

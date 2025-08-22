@@ -2,9 +2,10 @@ let dates = [];
 let currentIndex = 0;
 
 function getFormattedTodayDate() {
-    const today = new Date();
-    return today.toISOString().slice(0,10);
+    return sessionStorage.getItem('todays-date') || new Date().toISOString().slice(0,10);
 }
+
+
 
 export function setDates(newDates) {
     dates = newDates;
@@ -16,6 +17,15 @@ export function setCurrentByDate(dateStr) {
     if (idx >= 0) {
         currentIndex = idx;
     }
+}
+
+export function setCurrentIndex(idx) {
+    if (!Number.isFinite(idx)) return;
+    // find max value for index
+    const max = dates.length ?  dates.length - 1 : 0;
+    // Ensure index is in valid interval
+    currentIndex = Math.max(0, Math.min(max, idx));
+    return currentIndex;
 }
 
 
@@ -95,6 +105,7 @@ function updateContent(data) {
         const imageUrlLocal = `/archive/images/${data.date}.${extension}`;
 
         imageElement.src = imageUrlLocal;
+        imageElement.title = 'Click to Enlarge'
 
     } else if (imageUrl && (imageUrl.includes('youtube.com') || imageUrl.includes('youtu.be'))) {
         imageElement.style.display = 'none';
@@ -184,40 +195,77 @@ function updateButtons() {
     const nextButton = document.getElementById('next');
     const prevButton = document.getElementById('prev');
 
-    // Handle visibility for "Next" button
-    if (currentIndex === dates.length - 1) {
-        nextButton.classList.add('invisible'); // Hide but preserve space
-    } else {
-        nextButton.classList.remove('invisible'); // Show
+    if (!nextButton || !prevButton) return;
+
+    // Read all dates in the full set (so we don't use the subset)
+    let allDates = [];
+    try {
+        allDates = JSON.parse(sessionStorage.getItem('allDates') || '[]');
+    } catch {
+        allDates = [];
     }
 
-    // Handle visibility for "Previous" button (if needed)
-    if (currentIndex === 0) {
-        prevButton.classList.add('invisible'); // Optional: Hide "Previous" if on the first image
+    // Get current date
+    const cur = sessionStorage.getItem('currentDate');
+
+    // Set current index relative to full set
+    const pos = allDates.indexOf(cur);
+
+    // No data? show both buttons
+    if (pos === -1) {
+        nextButton.classList.remove('invisible');
+        prevButton.classList.remove('invisible');
+        return;
+    }
+
+    // Handle visibility for "Previous" button
+    
+    if (pos <= 0) {
+        prevButton.classList.add('invisible');
     } else {
         prevButton.classList.remove('invisible');
+    }
+
+    // Handle visibility for "Next" button
+    if (pos >= (allDates.length - 1)) {
+        nextButton.classList.add('invisible');
+    } else {
+        nextButton.classList.remove('invisible');
+    }
+
+    // finally if we are at todays date set Next to invisible
+
+    if (cur == sessionStorage.getItem('todays-date')) {
+        nextButton.classList.add('invisible');
     }
 }
 
 
 export function fetchAndDisplay(selectedDate = null) {
 
-    if (dates.length > 0 && dates[currentIndex]) {
-        let date = null;
-        if (selectedDate == null) {
-            date = dates[currentIndex];
-        } else {
-            date = selectedDate
-        }
-        
-        fetch(`/get-json/${date}`)
-            .then(response => response.json())
-            .then((data) => {
-                updateContent(data);
-                updateButtons(); // Update button visibility
-
-            })
-            .catch(error => console.error('Error loading the APOD data:', error));
+    if (!selectedDate && (!dates.length || currentIndex < 0 || currentIndex >= dates.length)) {
+        console.error('No active date to fetch (dates/currentIndex invalid');
+        return;
     }
+
+    const date = selectedDate ?? dates[currentIndex];
+    if (!date) {
+        console.error('No date resolved for fetchAndDisplay')
+    }
+    try {
+        sessionStorage.setItem('currentDate', date)
+    } catch (e) {
+        console.log(e);
+    }
+
+    fetch(`/get-json/${date}`)
+        .then(response => response.json())
+        .then((data) => {
+            updateContent(data);
+            updateButtons(); // Update button visibility
+
+        })
+        .catch(error => console.error('Error loading the APOD data:', error));
+
 }
 
