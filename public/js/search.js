@@ -1,12 +1,15 @@
 window.addEventListener('DOMContentLoaded', () => {
+    // Get search query from url
     const params = new URLSearchParams(window.location.search);
     const query = params.get('q') || '';
+    // Store query in sessionStorage
     if (query) {
         sessionStorage.setItem('lastSearch', query)
     }
+    // Make query start with capital letter to display as title for search page
     const query_as_title = query.charAt(0).toUpperCase() + query.slice(1);
     const search_page_title = document.getElementById('daysTitle');
-    search_page_title.innerHTML = `Search: ${query_as_title}:`
+    search_page_title.innerHTML = `Search Results for: ${query_as_title}`
 
     fetch(`/api/search?q=${encodeURIComponent(query)}`)
         .then(res => res.json())
@@ -23,17 +26,32 @@ const images = document.querySelectorAll('.search-image');
 
 
 
-
 function displayCards(items) {
     const container = document.getElementById('apod-cards');
+    
     // container.innerHTML = "";
     const resultDates = items.map(it => it.date);
     sessionStorage.setItem('resultDates', JSON.stringify(resultDates));
 
+    if (items < 1) {
+        const div = document.createElement('div');
+        div.id = 'no_results_on_search'
+        const h1 = document.createElement('h1');
+        h1.textContent = "No results found on " + sessionStorage.getItem('lastSearch');
+        div.appendChild(h1);
+        container.appendChild(div);
+        console.log('No results');
+    }
+
     items.forEach((data, i) => {
+
         const card = document.createElement('div');
         card.className = 'card';
 
+        const card_header = document.createElement('h3');
+        card_header.innerHTML = data.title;
+
+        card.appendChild(card_header);
 
         if (data.media_type === 'image') {
             const ext = (data.hdurl || data.url).split('.').pop().split('?')[0];

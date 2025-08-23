@@ -269,6 +269,19 @@ nav button {
     align-items: center;
 }
 
+#no_results_on_search {
+    width: 50%;
+    position:absolute;
+    margin: 0 auto;
+    background: #000;
+    border: solid 2px #FFD700;
+    border-radius: 8px;
+    padding: 20px;
+    justify-content: center;
+    align-items: center; 
+    text-align:center;
+}
+
 
 .image-panel > img,
 .image-panel > iframe,
@@ -278,3 +291,4 @@ nav button {
     max-width: 100%;
     object-fit: contain;
 }
+
