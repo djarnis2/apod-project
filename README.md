@@ -16,7 +16,7 @@
 * Example on a script to automate launch:
 ```bash
 @echo off
-cd C:\Projects\APOD
+cd C:\Projects\apod-project
 start cmd /k "npm start"
 ```
 
