@@ -21,3 +21,17 @@ start cmd /k "npm start"
 ```
 
 
+### Download APODs with python script
+Run download_apods.py with the flags -s  for start_date and -e for end_date to get more Apods to choose between.
+Default is start_date = 2025-08-22 and end_date = 2025-08-24 if you run without flags.
+
+* First install requirements
+```bash
+pip install -r requirements.txt
+```
+* Example:
+```bash
+python download_apods.py -s 2025-08-20 -e 2025-08-24
+```
+
+
