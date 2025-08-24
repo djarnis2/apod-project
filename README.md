@@ -1,6 +1,6 @@
-# The Apod Project
+![Banner](/public/assets/APOD_Project_banner.png)
 
-## Build a collection of APOD's (Astronomy Picture Of the Day)
+# Build a collection of APOD's (Astronomy Picture Of the Day)
 
 *  The code will create two folders, one for your images and one for the json files with data.
  * Every day you log in the image and data of that day will be stored in your folders.
