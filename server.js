@@ -8,6 +8,8 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import fetch from 'node-fetch';
 import open from 'open';
+import bodyParser from 'body-parser';
+import { error } from 'console';
 
 
 
@@ -16,6 +18,8 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 const port = 3000;
+
+
 
 const server = app.listen(port, () => {
     console.log(`Server listening at http://localhost:${port}`);
@@ -35,6 +39,10 @@ app.use((req, res, next) => {
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
+
+// To be able to read dates
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json())
 
 // Endpoint to list dates from the archive folder
 app.get('/dates', (req, res) => {
@@ -152,6 +160,119 @@ app.get('/todays-apod', async (req, res) => {
 
 app.get('/search-results', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'views', 'search.html'));
+});
+
+app.get('/import', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'views', 'import.html'))
+});
+
+app.post('/import', async (req, res) => {
+    const { startdate, enddate } = req.body;
+    console.log(startdate);
+
+    // Validate format
+    const re = /^\d{4}-\d{2}-\d{2}$/
+    if (!re.test(startdate) || !re.test(enddate)) {
+        return res.status(400).json({ error: 'illegal date-format' });
+    };
+
+    const start = new Date(startdate), end = new Date(enddate);
+    // Validate number of days
+    const diffDays = Math.round((end - start) / (1000 * 60 * 60 * 24));
+    if (diffDays < 0) return res.status(400).json({ error: 'End-date is before Start-date' });
+    if (diffDays > 30) return res.status(400).json({ error: 'Interval exceeds 30 days' });
+
+    // API Call
+    // close connection after response
+    res.set('Connection', 'close');
+
+    const apiKey = process.env.API_KEY;
+    const url_path = `https://api.nasa.gov/planetary/apod?api_key=${apiKey}&start_date=${encodeURIComponent(startdate)}&end_date=${encodeURIComponent(enddate)}`;
+
+    // Make paths
+    const jsonDir = path.join(__dirname, 'public', 'archive', 'json');
+    const imageDir = path.join(__dirname, 'public', 'archive', 'images');
+
+    try {
+        const respons = await fetch(url_path);
+        if (!respons.ok) {
+            throw new Error(`API-call failed: ${respons.status}`)
+        }
+
+        // Make folders if not exist
+        if (!fs.existsSync(jsonDir)) fs.mkdirSync(jsonDir, { recursive: true });
+        if (!fs.existsSync(imageDir)) fs.mkdirSync(imageDir, { recursive: true });
+
+        const data = await respons.json();
+        if (!Array.isArray(data)) {
+            return (res.status(502).json({ error: 'Unexpected NASA response' }));
+        }
+
+        const results = [];
+        let downloaded = 0, cached = 0, videos = 0, failed = 0;
+
+        for (const current_data of data) {
+            const current_date = current_data['date'];
+            const current_json_path = path.join(jsonDir, `${current_date}.json`);
+            // Save it 
+            fs.writeFileSync(current_json_path, JSON.stringify(current_data, null, 2));
+
+            let statusVar, imageUrl, extension, currentImagePath;
+
+
+            if (current_data.media_type === 'image') {
+                // Prioritice hd over normal
+                imageUrl = current_data.hdurl || current_data.url;
+                // Find the extension, remove a eventual query
+                extension = imageUrl.split('.').pop().split('?')[0];
+                // Construct filename with current_date plus extension
+                currentImagePath = path.join(imageDir, `${current_date}.${extension}`);
+
+
+                if (fs.existsSync(currentImagePath)) {
+                    statusVar = 'cached';
+                    cached += 1;
+                } else {
+                    statusVar = 'downloaded';
+                    downloaded += 1;
+                    // Fetch image
+                    const imageRes = await fetch(imageUrl);
+                    if (!imageRes.ok) {
+                        failed += 1;
+                        throw new Error('Failed to fetch image');
+                    }
+
+                    // Save image
+                    const buffer = await imageRes.buffer();
+                    fs.writeFileSync(currentImagePath, buffer);
+
+                    console.log('SERVER: data from NASA:', current_data);   // printed in terminal
+                }
+            } else {
+                statusVar = 'video';
+                videos += 1;
+            }
+
+            results.push({
+                date: current_date,
+                media_type: current_data['media_type'],
+                status: statusVar,
+                ...(statusVar === 'video'
+                    ? { url: current_data['url'] }
+                    : { imagePath: `/archive/images/${current_date}.${extension}` }
+                )
+            });
+        }
+        return res.json({
+            range: { start: startdate, end: enddate, days: results.length },
+            stats: { downloaded, cached, videos, failed },
+            results
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).send(`❌ Error: ${err.message}`);
+
+    }
 });
 
 app.get('/api/search', async (req, res) => {

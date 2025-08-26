@@ -1,5 +1,11 @@
-*, *::before, *::after {
+*,
+*::before,
+*::after {
     box-sizing: border-box;
+}
+/* Reserve plads til scrollbar på alle sider */
+:root {
+  scrollbar-gutter: stable; /* Chrome/Edge/Firefox */
 }
 
 html body {
@@ -20,7 +26,11 @@ html body.index-page {
 }
 
 html body.search-page {
-    overflow:scroll
+    overflow: scroll
+}
+
+html body.import-page {
+    overflow: scroll
 }
 
 .page-header {
@@ -30,12 +40,13 @@ html body.search-page {
 }
 
 .header-inner {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 5% 1fr auto;
     align-items: center;
-    flex-wrap: wrap;
+    gap: 24px;
     max-width: 100%;
-    margin: 1% 5% 1% 1.8%; /* top right buttom left */
+    margin: 1% 5% 1% 1.8%;
+    /* top right buttom left */
 }
 
 .header-inner h1 {
@@ -48,45 +59,21 @@ html body.search-page {
     width: 100px;
 }
 
+#import-btn {
+    padding: 6px 12px;
+    font-size: 1em;
+    background-color: #FFD700;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
 .header-inner a {
     overflow: hidden;
     border: 1px solid #333;
     border-radius: 10px;
     line-height: 0;
-}
-
-.apod-cards {
-    max-width: 100%;
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: .25rem;
-    margin: 0 5%;
-}
-
-.card {
-    color: black;
-    border:1px solid #bbb;
-    background-color:#FFD700;
-    padding: 0.5rem;
-}
-
-.card img {
-    max-width: 100%;
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 5px;
-}
-
-.card div {
-    border: 2px solid black;
-    border-radius: 5px;
-    height: 150px;
-    padding: 0 5px 0 5px;
-}
-
-.hide {
-    display: none;
 }
 
 .search-wrapper {
@@ -112,21 +99,123 @@ html body.search-page {
     cursor: pointer;
 }
 
+#import_body {
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+}
+
+#import_container {
+    width: 70%;
+    height: 80%;
+    margin: 20px auto;
+    padding: 2%;
+    text-align: center;
+    background: #000;
+    border: solid 2px #FFD700;
+    border-radius: 8px;
+}
+
+.import-form {
+    flex-direction: row;
+    align-content:space-evenly;
+    gap: 1rem;
+}
+
+#import-apods {
+    max-width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3 , minmax(300px, 1fr));
+    gap: .25rem;
+    margin: 0 5%;
+
+}
+
+#import-result {
+    max-width: 100%;
+    padding: 2%;
+    margin: 5%;
+    border: solid 2px #FFD700;
+    border-radius: 8px;
+}
+
+#import-apods div {
+    text-align: center;
+    border: solid 2px #FFD700;
+    border-radius: 8px;
+}
+
+#submit {
+    padding: 2px 4px;
+    background-color: #FFD700;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+#enddate, #startdate {
+    padding: 2px 4px;
+    background-color: wheat;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+}
+.apod-cards {
+    max-width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: .25rem;
+    margin: 0 5%;
+}
+
+.card {
+    color: black;
+    border: 1px solid #bbb;
+    background-color: #FFD700;
+    padding: 0.5rem;
+}
+
+.card img {
+    max-width: 100%;
+    width: 100%;
+    height: 150px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.card div {
+    border: 2px solid black;
+    border-radius: 5px;
+    height: 150px;
+    padding: 0 5px 0 5px;
+}
+
+.hide {
+    display: none;
+}
+
+
+
 .main-container {
     flex: 1;
     display: flex;
 }
 
 .left-container {
-    flex: 3; /* Use most of the space for the media */
+    flex: 3;
+    /* Use most of the space for the media */
     display: flex;
     overflow: hidden;
 }
 
 .apod-loader {
-    position:absolute;
+    position: absolute;
     top: 40%;
-    left:40%;  
+    left: 40%;
 }
 
 #go-to-apod {
@@ -164,7 +253,9 @@ nav button {
     font-size: 1em;
 }
 
-#back-to-search, #search-previous, #search-next {
+#back-to-search,
+#search-previous,
+#search-next {
     margin-top: 5%;
     padding: 8px 16px;
     background-color: #FFD700;
@@ -182,7 +273,8 @@ nav button {
 }
 
 .invisible {
-    visibility: hidden; /* Makes the button invisible but keeps its space */
+    visibility: hidden;
+    /* Makes the button invisible but keeps its space */
 }
 
 .description-panel {
@@ -193,7 +285,8 @@ nav button {
 /* Pop-up vindue */
 /* Modal styling */
 .modal {
-    display: none; /* Hidden by default */
+    display: none;
+    /* Hidden by default */
     position: fixed;
     z-index: 1000;
     left: 0;
@@ -238,7 +331,7 @@ nav button {
 #fallback {
     /* width: calc(83% - 0px); 
     height: calc(88% - 50px);  */
-    object-fit: contain; 
+    object-fit: contain;
     text-align: center;
 }
 
@@ -271,24 +364,23 @@ nav button {
 
 #no_results_on_search {
     width: 50%;
-    position:absolute;
+    position: absolute;
     margin: 0 auto;
     background: #000;
     border: solid 2px #FFD700;
     border-radius: 8px;
     padding: 20px;
     justify-content: center;
-    align-items: center; 
-    text-align:center;
+    align-items: center;
+    text-align: center;
 }
 
 
-.image-panel > img,
-.image-panel > iframe,
-.image-panel > video,
-.image-panel > #fallback {
+.image-panel>img,
+.image-panel>iframe,
+.image-panel>video,
+.image-panel>#fallback {
     max-height: 100%;
     max-width: 100%;
     object-fit: contain;
 }
-

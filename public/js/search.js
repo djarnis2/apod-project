@@ -107,14 +107,12 @@ function displayCards(items) {
     });
 }
 
-document.getElementById('searchBtn').addEventListener('click', () => {
-    const query = document.getElementById('searchField').value.trim();
-    if (!query) {
-        return;
-    }
-    sessionStorage.setItem('lastSearch', query)
-    window.location.href = `/search-results?q=${encodeURIComponent(query)}`;
+const homeBtn = document.getElementById('home-btn');
+
+homeBtn.addEventListener('click', () => {
+    window.location.href = '/';
 });
+
 
 
 

@@ -241,16 +241,6 @@ document.getElementById('next').addEventListener('click', async() => {
 });
 
 
-
-document.getElementById('searchBtn').addEventListener('click', () => {
-    const query = document.getElementById('searchField').value.trim();
-    if (!query) {
-        return;
-    }
-    window.location.href = `/search-results?q=${encodeURIComponent(query)}`;
-});
-
-
 // Pop-up vindue
 
 // Get the modal, image, and close button
@@ -274,6 +264,11 @@ modal.addEventListener('click', () => {
 //     navigator.sendBeacon('/shutdown');
 // });
 
+const importBtn = document.getElementById('import-btn')
+
+importBtn.addEventListener('click', () => {
+    window.location.href = '/import';
+});
 
 init();
 

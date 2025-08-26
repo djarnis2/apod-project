@@ -17,13 +17,18 @@
 <body class="search-page">
     <header class="page-header">
         <div class="header-inner">
-            <a href="/" class="logo-link" title="Home" >
+            <a href="/" class="logo-link" title="Home">
                 <img src="/assets/apod-logo.webp" alt="APOD logo" class="logo">
             </a>
             <h1 id="daysTitle">Search Results</h1>
             <div class="search-wrapper">
-                <input type="search" placeholder="Search" id="searchField" />
-                <button id="searchBtn">Submit</button>
+                <div>
+                    <button id="home-btn">Return Home</button>
+                </div>
+                <form action="/search-results" method="get" class="search-wrapper">
+                    <input type="search" placeholder="Search" id="searchField" />
+                    <button id="searchBtn">Submit</button>
+                </form>
             </div>
         </div>
     </header>
@@ -34,7 +39,7 @@
     <div id="imageModal" class="modal">
         <img class="modal-content" id="modalImage">
     </div>
-    
+
 </body>
 <script type="module" src="/js/search.js"></script>
 

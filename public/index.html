@@ -21,9 +21,16 @@
                 <img src="/assets/apod-logo.webp" alt="APOD logo" class="logo">
             </a>
             <h1 id="daysTitle">This is the Astronomy Picture Of the Day</h1>
+            
             <div class="search-wrapper">
-                <input type="search" placeholder="Search" id="searchField" />
-                <button id="searchBtn">Submit</button>
+                <div>
+                    <button id="import-btn" >Import APODs</button>
+                </div>
+                <form action="/search-results" method="get" class="search-wrapper">
+                    <input type="search" placeholder="Search" id="searchField" />
+                    <button id="searchBtn">Submit</button>
+                </form>
+
             </div>
         </div>
     </header>
