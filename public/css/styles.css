@@ -52,6 +52,7 @@ html body.import-page {
 .header-inner h1 {
     margin: 0;
     font-size: 1.5em;
+    text-align: center;
     /* flex: 1; */
 }
 
@@ -135,19 +136,21 @@ html body.import-page {
     max-width: 100%;
     padding: 2%;
     margin: 5%;
-    border: solid 2px #FFD700;
+    border: hidden 2px #FFD700;
     border-radius: 8px;
 }
 
 #import-apods div {
     text-align: center;
-    border: solid 2px #FFD700;
+    border: hidden 2px #FFD700;
+    background-color: #3d3d3b;
+    color: #FFD700;
     border-radius: 8px;
 }
 
 #submit {
     padding: 2px 4px;
-    background-color: #FFD700;
+    background-color: #ffbb00;
     color: black;
     border: none;
     border-radius: 5px;

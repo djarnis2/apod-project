@@ -13,7 +13,18 @@ function showResults(items) {
 
         p1.innerHTML = `${item.date}`;
         p2.innerHTML = `${item.media_type}`;
-        p3.innerHTML = `${item.status}`;
+        if (item.status == 'downloaded') {
+            p3.innerHTML = `${item.status} ✅`
+        } 
+       if (item.status == 'cached') {
+            p3.innerHTML = `${item.status} 🗄️`
+        } 
+        if (item.status == 'video') {
+            p3.innerHTML = `${item.status} 🎞️`
+        } 
+        if (item.status == 'failed') {
+            p3.innerHTML = `${item.status} ❌`
+        } 
 
         div1.appendChild(p1);
         div2.appendChild(p2);
@@ -53,13 +64,9 @@ form.addEventListener('submit', async (e) => {
         }
 
         const stats = data.stats || {};
-        const items = (data.results || [])
-            .map(r => `<li>${r.date} — ${r.media_type} — <strong>${r.status}</strong></li>`)
-            .join('');
-
 
         box.innerHTML = `
-      <p><strong>Range:</strong> ${data.range.start} → ${data.range.end} (${data.range.days} days) - downloaded ${stats.downloaded || 0}, cached ${stats.cached || 0}, videos ${stats.videos || 0}, failed ${stats.failed || 0}</p>`;
+      <p><strong>Range:</strong> ${data.range.start} → ${data.range.end} (${data.range.days} days) - downloaded ✅ ${stats.downloaded || 0}, cached 🗄️ ${stats.cached || 0}, videos 🎞️ ${stats.videos || 0}, failed ❌ ${stats.failed || 0}</p>`;
 
         showResults(data.results);
     } catch (err) {
