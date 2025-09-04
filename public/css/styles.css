@@ -302,8 +302,8 @@ nav button {
 
 /* Modal image */
 .modal-content {
-    max-width: 90vw;
-    max-height: 90vh;
+    max-width: 100vw;
+    max-height: 100vh;
     margin: auto;
     display: block;
     width: auto;
@@ -311,6 +311,7 @@ nav button {
     border: 3px solid white;
     border-radius: 10px;
 }
+
 
 /* Close button */
 .close {
