@@ -33,7 +33,7 @@ function displayCards(items) {
     const resultDates = items.map(it => it.date);
     sessionStorage.setItem('resultDates', JSON.stringify(resultDates));
 
-    if (items < 1) {
+    if (items.length < 1) {
         const div = document.createElement('div');
         div.id = 'no_results_on_search'
         const h1 = document.createElement('h1');
