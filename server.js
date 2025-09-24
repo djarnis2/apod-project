@@ -93,6 +93,7 @@ app.get('/todays-apod', async (req, res) => {
         }
 
         const data = await respons.json();
+        
 
         // Save data
         // First make paths
@@ -113,8 +114,17 @@ app.get('/todays-apod', async (req, res) => {
         let statusVar, imageUrl, extension, imagePath;
 
         if (data.media_type === 'image') {
+
+            
             // Prioritice hd over normal
             imageUrl = data.hdurl || data.url;
+            let imageRes = await fetch(imageUrl);
+            const contentType = imageRes.headers.get("Content-type") || "";
+            if (!contentType.startsWith("image/")) {
+                imageUrl = data.url;
+            }
+            
+        
             // Find the extension, remove a eventual query
             extension = imageUrl.split('.').pop().split('?')[0];
             // Construct filename with date plus extension
@@ -126,7 +136,7 @@ app.get('/todays-apod', async (req, res) => {
             } else {
                 statusVar = 'downloaded';
                 // Fetch image
-                const imageRes = await fetch(imageUrl);
+                imageRes = await fetch(imageUrl);
                 if (!imageRes.ok) throw new Error('Failed to fetch image');
 
                 // Save image
@@ -221,33 +231,47 @@ app.post('/import', async (req, res) => {
 
 
             if (current_data.media_type === 'image') {
-                // Prioritice hd over normal
-                imageUrl = current_data.hdurl || current_data.url;
-                // Find the extension, remove a eventual query
-                extension = imageUrl.split('.').pop().split('?')[0];
-                // Construct filename with current_date plus extension
-                currentImagePath = path.join(imageDir, `${current_date}.${extension}`);
+                try {
+                    // Prioritice hd over normal
+                    imageUrl = current_data.hdurl || current_data.url;
+                    // Find the extension, remove a eventual query
 
-
-                if (fs.existsSync(currentImagePath)) {
-                    statusVar = 'cached';
-                    cached += 1;
-                } else {
-                    statusVar = 'downloaded';
-                    downloaded += 1;
-                    // Fetch image
-                    const imageRes = await fetch(imageUrl);
-                    if (!imageRes.ok) {
-                        failed += 1;
-                        throw new Error('Failed to fetch image');
+                    let imageRes = await fetch(imageUrl);
+                    let contentType = imageRes.headers.get("Content-type") || "";
+                    if (!contentType.startsWith("image/")) {
+                        imageUrl = current_data.url;
+                        imageRes = await fetch(imageUrl);
+                        contentType = imageRes.headers.get("Content-type") || "";
                     }
 
-                    // Save image
-                    const buffer = await imageRes.buffer();
-                    fs.writeFileSync(currentImagePath, buffer);
+                    if (!imageRes.ok || !contentType.startsWith("image/")) {
+                        statusVar = 'failed';
+                        failed += 1;
+                    } else {
+                        extension = imageUrl.split('.').pop().split('?')[0];
+                        // Construct filename with current_date plus extension
+                        currentImagePath = path.join(imageDir, `${current_date}.${extension}`);
+                        if (fs.existsSync(currentImagePath)) {
+                        statusVar = 'cached';
+                        cached += 1;
+                        } else {
+                            statusVar = 'downloaded';
+                            downloaded += 1;
+                            // Fetch image
+                            imageRes = await fetch(imageUrl);
+                                                // Save image
+                            const buffer = await imageRes.buffer();
+                            fs.writeFileSync(currentImagePath, buffer);
+                            console.log('SERVER: data from NASA:', current_data);   // printed in terminal
 
-                    console.log('SERVER: data from NASA:', current_data);   // printed in terminal
+                        }
+                    }
+                } catch (err) {
+                    console.error(`Image failed for ${current_date}:`, err.message);
+                    statusVar = 'failed';
+                    failed += 1;
                 }
+
             } else {
                 statusVar = 'video';
                 videos += 1;
