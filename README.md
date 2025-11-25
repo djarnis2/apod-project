@@ -1,7 +1,5 @@
 ![Banner](/public/assets/APOD_Project_banner.png)
 
-# Notice from NASA:
-![Banner](/public/assets/Nasa_notice.png)
 
 # Build a collection of APODs (Astronomy Picture Of the Day)
 
