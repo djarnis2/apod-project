@@ -206,7 +206,9 @@ app.post('/import', async (req, res) => {
     try {
         const respons = await fetch(url_path);
         if (!respons.ok) {
-            throw new Error(`API-call failed: ${respons.status}`)
+            return res.status(502).json({
+                error: `NASA API failed with status ${respons.status}`
+            });
         }
 
         // Make folders if not exist
@@ -293,7 +295,7 @@ app.post('/import', async (req, res) => {
             results
         });
     } catch (err) {
-        console.error(err);
+        console.error("❌ IMPORT ERROR:", err);
         res.status(500).send(`❌ Error: ${err.message}`);
 
     }

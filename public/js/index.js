@@ -25,6 +25,19 @@ const initialDate = getInitialDateFromUrl();
 const savedIdx = parseInt(sessionStorage.getItem('resultIndex'), 10);
 const usingSubset = Array.isArray(subset) && subset.length > 0;
 
+async function refreshAllDates() {
+    const res = await fetch('/dates');
+
+    if (!res.ok) {
+        throw new Error('Could not fetch dates');
+    }
+
+    const data = await res.json();
+    allDatesCache = data;
+    sessionStorage.setItem('allDates', JSON.stringify(data));
+    return data;
+}
+
 async function init() {
     console.log('🔵 init startet');
 
@@ -210,12 +223,22 @@ async function ensureAllDatesActive() {
     allDatesCache = data;
 }
 
-document.getElementById('today').addEventListener('click', async() => {
-    await ensureAllDatesActive();
-    const today = new Date().toISOString().slice(0,10);
+document.getElementById('today').addEventListener('click', async () => {
+    const res = await fetch('/todays-apod');
+
+    if (!res.ok) {
+        console.error('Could not fetch today APOD');
+        return;
+    }
+
+    const payload = await res.json();
+    const apodDate = payload.date;
+
+    await refreshAllDates();
+
     setDates(allDatesCache);
-    setCurrentByDate(today);
-    fetchAndDisplay(today);
+    setCurrentByDate(apodDate);
+    fetchAndDisplay(apodDate);
 })
 
 document.getElementById('prev').addEventListener('click', async() => {
@@ -271,7 +294,3 @@ importBtn.addEventListener('click', () => {
 });
 
 init();
-
-
-
-
